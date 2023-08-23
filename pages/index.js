@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
-import Layout from '../components/layout/Layout';
+import Head from 'next/head';
 import MeetupList from '../components/meetups/MeetupList';
-import { revalidateTag } from 'next/cache';
 import { MongoClient } from "mongodb";
+import { Fragment } from 'react';
 
 
 const DUMMY_MEETUPS = [
@@ -25,8 +24,15 @@ const DUMMY_MEETUPS = [
 function HomePage (props) {
 
 
-    return (        
-        <MeetupList meetups={props.meetups} />    
+    return (   
+        <Fragment>
+            <Head>
+                <title>NextJs MeetUps</title>
+                <meta name='description' content='Browse a huge list of highly active react meetups'/>
+            </Head>
+            
+            <MeetupList meetups={props.meetups} /> 
+        </Fragment>        
     )
 }
 
