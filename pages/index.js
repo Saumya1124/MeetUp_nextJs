@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import Layout from '../components/layout/Layout';
 import MeetupList from '../components/meetups/MeetupList';
 import { revalidateTag } from 'next/cache';
+import { MongoClient } from "mongodb";
+
 
 const DUMMY_MEETUPS = [
     {
@@ -22,15 +24,32 @@ const DUMMY_MEETUPS = [
 
 function HomePage (props) {
 
+
     return (        
         <MeetupList meetups={props.meetups} />    
     )
 }
 
 export async function getStaticProps(){
+
+    const client = await MongoClient.connect('mongodb+srv://Saumya_24:Saumya_123@cluster0.6o5hkxs.mongodb.net/?retryWrites=true&w=majority');
+      const db = client.db();
+
+      const meetupsCollection = db.collection('meetups')
+      const meetups = await meetupsCollection.find().toArray();
+      console.log(meetups)
+      client.close();
+
+    //   res.status(201).json({message:'meetup fetched!'});
+
     return {
         props : {
-            meetups : DUMMY_MEETUPS
+            meetups: meetups.map(meetup => ({
+                title:meetup.title,
+                address:meetup.address,
+                image:meetup.image,
+                id:meetup._id.toString(),
+            }))
         },
         revalidate : 10
     }
